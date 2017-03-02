@@ -1,0 +1,13 @@
+<resources>
+    <string name="disable_tethering">Disable tethering</string>
+    <string name="enable_tethering">Enable tethering</string>
+    <string name="plugin_action">Plugin action:</string>
+    <string name="no_system_warning">Plugin will not work without app being installed on system first</string>
+    <string name="install_app_to_the_system">Install app to the system</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="no_root">Your device does not appear to be rooted.</string>
+    <string name="install_success">Install successful</string>
+    <string name="install_failed">Install failed</string>
+    <string name="reboot_request">Please reboot your phone to make system recognize new system app</string>
+    <string name="toggle_tethering">Toggle Tethering</string>
+</resources>
