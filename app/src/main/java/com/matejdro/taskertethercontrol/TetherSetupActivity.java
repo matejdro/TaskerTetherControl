@@ -14,6 +14,7 @@ import com.matejdro.taskertethercontrol.taskerutils.TaskerSetupActivity;
 
 import net.dinglisch.android.tasker.TaskerPlugin;
 
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 
 public class TetherSetupActivity extends TaskerSetupActivity {
@@ -112,6 +113,8 @@ public class TetherSetupActivity extends TaskerSetupActivity {
 
                 OutputStreamWriter streamWriter = new OutputStreamWriter(suProcess.getOutputStream());
 
+                final InputStream errorStream = suProcess.getErrorStream();
+
                 //Mount system as R/W
                 streamWriter.write("mount -o rw,remount,rw /system\n");
 
@@ -129,10 +132,11 @@ public class TetherSetupActivity extends TaskerSetupActivity {
                 streamWriter.write("exit\n");
                 streamWriter.close();
 
-                suProcess.waitFor();
+                errorMessage = StreamUtils.readAndCloseStreamWithTimeout(errorStream, 5000);
 
-                return true;
+                return errorMessage.trim().isEmpty();
             } catch (Exception e) {
+                e.printStackTrace();
                 errorMessage = e.getMessage();
                 return false;
             } finally {
