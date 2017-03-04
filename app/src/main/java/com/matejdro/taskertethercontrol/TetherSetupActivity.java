@@ -117,16 +117,20 @@ public class TetherSetupActivity extends TaskerSetupActivity {
 
                 //Mount system as R/W
                 streamWriter.write("mount -o rw,remount,rw /system\n");
+                streamWriter.flush();
 
                 //Copy over APK
                 String apkPath = getPackageResourcePath();
                 streamWriter.write("cat " + apkPath + " > /system/priv-app/com.matejdro.taskertethercontrol.apk\n");
+                streamWriter.flush();
 
                 //Update file permissions
                 streamWriter.write("chmod 644 /system/priv-app/com.matejdro.taskertethercontrol.apk\n");
+                streamWriter.flush();
 
                 //Mount system back to RO
                 streamWriter.write("mount -o ro,remount,ro /system\n");
+                streamWriter.flush();
 
                 //Exit SU
                 streamWriter.write("exit\n");

@@ -33,7 +33,7 @@ public class StreamUtils {
                 stringBuilder.append((char) readByte);
             }
         } catch (InterruptedIOException ignored) {
-            return "Timeout";
+            stringBuilder.append("\nTIMEOUT");
         }
 
         readTimeoutThread.interrupt();
