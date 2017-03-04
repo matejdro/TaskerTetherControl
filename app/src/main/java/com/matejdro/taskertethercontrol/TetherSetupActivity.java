@@ -116,7 +116,7 @@ public class TetherSetupActivity extends TaskerSetupActivity {
                 final InputStream errorStream = suProcess.getErrorStream();
 
                 //Mount system as R/W
-                streamWriter.write("mount -o rw,remount,rw /system\n");
+                streamWriter.write("mount -o rw,remount /system\n");
                 streamWriter.flush();
 
                 //Copy over APK
@@ -129,7 +129,7 @@ public class TetherSetupActivity extends TaskerSetupActivity {
                 streamWriter.flush();
 
                 //Mount system back to RO
-                streamWriter.write("mount -o ro,remount,ro /system\n");
+                streamWriter.write("mount -o ro,remount /system\n");
                 streamWriter.flush();
 
                 //Exit SU
