@@ -49,7 +49,8 @@ public class TaskerReceiver extends BroadcastReceiver {
 
         } catch (Exception e) {
             Bundle vars = new Bundle();
-            vars.putString(TaskerPlugin.Setting.VARNAME_ERROR_MESSAGE, e.getMessage());
+            String errorMessage = ExceptionUtils.getNestedExceptionMessages(e);
+            vars.putString(TaskerPlugin.Setting.VARNAME_ERROR_MESSAGE, errorMessage);
             TaskerPlugin.addVariableBundle(getResultExtras(true), vars);
             setResultCode(TaskerPlugin.Setting.RESULT_CODE_FAILED);
 

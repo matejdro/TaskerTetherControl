@@ -141,7 +141,7 @@ public class TetherSetupActivity extends TaskerSetupActivity {
                 return errorMessage.trim().isEmpty();
             } catch (Exception e) {
                 e.printStackTrace();
-                errorMessage = e.getMessage();
+                errorMessage = ExceptionUtils.getNestedExceptionMessages(e);
                 return false;
             } finally {
                 if (suProcess != null) {
