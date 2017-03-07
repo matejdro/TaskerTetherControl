@@ -78,7 +78,7 @@ public class TetherSetupActivity extends TaskerSetupActivity {
         intent.putExtra(LocaleConstants.EXTRA_STRING_BLURB, description);
         intent.putExtra(LocaleConstants.EXTRA_BUNDLE, dataStorage);
 
-        TaskerPlugin.Setting.requestTimeoutMS(intent, 2000);
+        TaskerPlugin.Setting.requestTimeoutMS(intent, 7000);
 
         setResult(RESULT_OK, intent);
     }
