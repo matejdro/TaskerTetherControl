@@ -2,12 +2,18 @@ package com.matejdro.taskertethercontrol;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RadioButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.matejdro.taskertethercontrol.taskerutils.LocaleConstants;
 import com.matejdro.taskertethercontrol.taskerutils.TaskerSetupActivity;
@@ -21,30 +27,60 @@ public class TetherSetupActivity extends TaskerSetupActivity {
     private RadioButton enableButton;
     private RadioButton disableButton;
 
+    private TextView warningView;
+    private Button fixPermissionButton;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_tasker_control);
 
-        enableButton = (RadioButton) findViewById(R.id.enableButton);
-        disableButton = (RadioButton) findViewById(R.id.disableButton);
+        enableButton = findViewById(R.id.enableButton);
+        disableButton = findViewById(R.id.disableButton);
 
         super.onCreate(savedInstanceState);
 
-        View warningView = findViewById(R.id.warning_box);
-        View installButtonView = findViewById(R.id.install_button);
-
-        if (checkPermission("android.permission.MANAGE_USERS",
-                android.os.Process.myPid(),
-                android.os.Process.myUid()) == PackageManager.PERMISSION_GRANTED) {
-            warningView.setVisibility(View.GONE);
-            installButtonView.setVisibility(View.GONE);
-        }
+        warningView = findViewById(R.id.warning_box);
+        fixPermissionButton = findViewById(R.id.action_button);
     }
 
     @Override
     public void onBackPressed() {
         save();
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (!Settings.System.canWrite(this)) {
+            warningView.setVisibility(View.VISIBLE);
+            fixPermissionButton.setVisibility(View.VISIBLE);
+
+            warningView.setText(R.string.no_settings_permission_warning);
+            warningView.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.ic_warning, 0, 0, 0
+            );
+
+            fixPermissionButton.setText(R.string.open_settings);
+        } else if (checkPermission("android.permission.TETHER_PRIVILEGED",
+                android.os.Process.myPid(),
+                android.os.Process.myUid()) != PackageManager.PERMISSION_GRANTED) {
+            warningView.setVisibility(View.VISIBLE);
+            fixPermissionButton.setVisibility(View.VISIBLE);
+
+            warningView.setText(R.string.no_system_warning);
+            warningView.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.ic_info, 0, 0, 0
+            );
+
+            fixPermissionButton.setText(R.string.install_app_to_the_system);
+        } else {
+            warningView.setVisibility(View.GONE);
+            fixPermissionButton.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
@@ -84,16 +120,30 @@ public class TetherSetupActivity extends TaskerSetupActivity {
     }
 
 
-    public void installSystemApp(View view) {
+    public void fixPermissions(View view) {
+        if (!Settings.System.canWrite(this)) {
+            Intent settingsIntent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+            settingsIntent.setData(Uri.parse("package:" + getPackageName()));
+
+            try {
+                startActivity(settingsIntent);
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+
         new SystemInstallTask().execute((Void[]) null);
     }
 
     private class SystemInstallTask extends AsyncTask<Void, Void, Boolean> {
         private String errorMessage = getString(R.string.unknown_error);
+        @SuppressWarnings("deprecation")
         private ProgressDialog progressDialog;
 
         @Override
         protected void onPreExecute() {
+            //noinspection deprecation
             progressDialog = new ProgressDialog(TetherSetupActivity.this);
             progressDialog.setIndeterminate(true);
             progressDialog.setMessage("Installing app to system...");

@@ -2,8 +2,11 @@
     <string name="disable_tethering">Disable tethering</string>
     <string name="enable_tethering">Enable tethering</string>
     <string name="plugin_action">Plugin action:</string>
-    <string name="no_system_warning">Plugin will not work without app being installed on system first</string>
+    <string name="no_system_warning">If plugin still does not work, you can try installing it to the system. This requires root access.</string>
+    <string name="no_settings_permission_warning">Plugin will not work without app being granted system settings permission.</string>
     <string name="install_app_to_the_system">Install app to the system</string>
+    <string name="open_settings">Open settings</string>
+
     <string name="unknown_error">Unknown error</string>
     <string name="no_root">Your device does not appear to be rooted.</string>
     <string name="install_success">Install successful</string>
