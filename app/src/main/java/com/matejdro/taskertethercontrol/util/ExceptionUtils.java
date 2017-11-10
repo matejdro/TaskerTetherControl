@@ -1,4 +1,4 @@
-package com.matejdro.taskertethercontrol;
+package com.matejdro.taskertethercontrol.util;
 
 public class ExceptionUtils {
     public static String getNestedExceptionMessages(Throwable throwable) {

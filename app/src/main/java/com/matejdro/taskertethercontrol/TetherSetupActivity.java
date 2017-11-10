@@ -17,6 +17,9 @@ import android.widget.Toast;
 
 import com.matejdro.taskertethercontrol.taskerutils.LocaleConstants;
 import com.matejdro.taskertethercontrol.taskerutils.TaskerSetupActivity;
+import com.matejdro.taskertethercontrol.util.ExceptionUtils;
+import com.matejdro.taskertethercontrol.util.RootUtil;
+import com.matejdro.taskertethercontrol.util.StreamUtils;
 
 import net.dinglisch.android.tasker.TaskerPlugin;
 

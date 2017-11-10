@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 
 import com.matejdro.taskertethercontrol.taskerutils.LocaleConstants;
+import com.matejdro.taskertethercontrol.util.ExceptionUtils;
 
 import net.dinglisch.android.tasker.TaskerPlugin;
 

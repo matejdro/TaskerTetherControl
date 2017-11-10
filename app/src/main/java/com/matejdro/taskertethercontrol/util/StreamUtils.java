@@ -1,4 +1,4 @@
-package com.matejdro.taskertethercontrol;
+package com.matejdro.taskertethercontrol.util;
 
 import java.io.IOException;
 import java.io.InputStream;

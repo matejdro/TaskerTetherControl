@@ -1,4 +1,4 @@
-package com.matejdro.taskertethercontrol;
+package com.matejdro.taskertethercontrol.util;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -17,11 +17,7 @@ public class RootUtil {
             out.flush();
 
             String line = in.readLine();
-            if (line == null) {
-                return false;
-            }
-
-            return true;
+            return line != null;
         } catch (IOException e) {
             return false;
         }
