@@ -39,25 +39,10 @@ public class TaskerReceiver extends BroadcastReceiver {
                     (CONNECTIVITY_SERVICE);
 
             if (enableTethering) {
-                Class internalConnectivityManagerClass = Class.forName("android.net.IConnectivityManager");
-
                 Field internalConnectivityManagerField = ConnectivityManager.class.getDeclaredField("mService");
                 internalConnectivityManagerField.setAccessible(true);
 
-                Object internalConnectivityManager = internalConnectivityManagerField.get(connectivityManager);
-
-                Method startTetheringMethod = internalConnectivityManagerClass.getDeclaredMethod("startTethering",
-                        int.class,
-                        ResultReceiver.class,
-                        boolean.class);
-
-                ResultReceiver dummyResultReceiver = new ResultReceiver(null);
-
-                startTetheringMethod.invoke(internalConnectivityManager,
-                        0,
-                        dummyResultReceiver,
-                        false
-                );
+                callStartTethering(internalConnectivityManagerField.get(connectivityManager));
             } else {
                 Method stopTetheringMethod = connectivityClass.getDeclaredMethod("stopTethering", int.class);
                 stopTetheringMethod.invoke(connectivityManager, 0);
@@ -74,5 +59,36 @@ public class TaskerReceiver extends BroadcastReceiver {
         }
 
         setResultCode(TaskerPlugin.Setting.RESULT_CODE_OK);
+    }
+
+    private void callStartTethering(Object internalConnectivityManager) throws ReflectiveOperationException {
+        Class internalConnectivityManagerClass = Class.forName("android.net.IConnectivityManager");
+
+        ResultReceiver dummyResultReceiver = new ResultReceiver(null);
+
+        try {
+            Method startTetheringMethod = internalConnectivityManagerClass.getDeclaredMethod("startTethering",
+                    int.class,
+                    ResultReceiver.class,
+                    boolean.class);
+
+            startTetheringMethod.invoke(internalConnectivityManager,
+                    0,
+                    dummyResultReceiver,
+                    false);
+        } catch (NoSuchMethodException e) {
+            // Newer devices have "callingPkg" String argument at the end of this method.
+            Method startTetheringMethod = internalConnectivityManagerClass.getDeclaredMethod("startTethering",
+                    int.class,
+                    ResultReceiver.class,
+                    boolean.class,
+                    String.class);
+
+            startTetheringMethod.invoke(internalConnectivityManager,
+                    0,
+                    dummyResultReceiver,
+                    false,
+                    "com.matejdro.taskertethercontrol");
+        }
     }
 }
