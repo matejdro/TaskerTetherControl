@@ -13,4 +13,6 @@
     <string name="install_failed">Install failed</string>
     <string name="reboot_request">Please reboot your phone to make system recognize new system app</string>
     <string name="toggle_tethering">Toggle Tethering</string>
+    <string name="error_no_settings_permission">No \"modify system settings\" permission. Open config dialog.\n\n</string>
+    <string name="error_root_needed">System install (ROOT) needed. Open config dialog.\n\n</string>
 </resources>

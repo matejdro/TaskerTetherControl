@@ -18,4 +18,18 @@ public class ExceptionUtils {
 
         return message.toString();
     }
+
+    public static boolean isSecurityException(Throwable throwable) {
+        while (true) {
+            if (throwable instanceof SecurityException) {
+                return true;
+            }
+
+            if (throwable.getCause() != null) {
+                throwable = throwable.getCause();
+            } else {
+                return false;
+            }
+        }
+    }
 }

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.ResultReceiver;
+import android.provider.Settings;
 
 import com.matejdro.taskertethercontrol.taskerutils.LocaleConstants;
 import com.matejdro.taskertethercontrol.util.ExceptionUtils;
@@ -21,6 +22,10 @@ import static android.content.Context.CONNECTIVITY_SERVICE;
 @SuppressWarnings("unchecked")
 @SuppressLint("PrivateApi")
 public class TaskerReceiver extends BroadcastReceiver {
+    private static boolean hasSystemSettingsPermsision(Context context) {
+        return Settings.System.canWrite(context);
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent == null) {
@@ -51,6 +56,15 @@ public class TaskerReceiver extends BroadcastReceiver {
         } catch (Exception e) {
             Bundle vars = new Bundle();
             String errorMessage = ExceptionUtils.getNestedExceptionMessages(e);
+
+            if (ExceptionUtils.isSecurityException(e)) {
+                if (hasSystemSettingsPermsision(context)) {
+                    errorMessage = context.getString(R.string.error_root_needed) + errorMessage;
+                } else {
+                    errorMessage = context.getString(R.string.error_no_settings_permission) + errorMessage;
+                }
+            }
+
             vars.putString(TaskerPlugin.Setting.VARNAME_ERROR_MESSAGE, errorMessage);
             TaskerPlugin.addVariableBundle(getResultExtras(true), vars);
             setResultCode(TaskerPlugin.Setting.RESULT_CODE_FAILED);
