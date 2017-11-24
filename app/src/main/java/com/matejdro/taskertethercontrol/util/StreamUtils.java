@@ -3,6 +3,7 @@ package com.matejdro.taskertethercontrol.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
+import java.io.OutputStream;
 
 public class StreamUtils {
     public static String readAndCloseStreamWithTimeout(final InputStream stream, final int timeoutMs) throws
@@ -40,5 +41,14 @@ public class StreamUtils {
         readTimeoutThread.join();
 
         return stringBuilder.toString();
+    }
+
+    public static void copyData(InputStream from, OutputStream to) throws IOException {
+        byte[] buffer = new byte[1024];
+        int read;
+
+        while ((read = from.read(buffer)) > 0) {
+            to.write(buffer, 0, read);
+        }
     }
 }

@@ -1,15 +1,20 @@
 package com.matejdro.taskertethercontrol;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 
 import com.matejdro.taskertethercontrol.util.ExceptionUtils;
 import com.matejdro.taskertethercontrol.util.RootUtil;
 import com.matejdro.taskertethercontrol.util.StreamUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.ref.WeakReference;
 
@@ -67,6 +72,10 @@ class SystemInstallTask extends AsyncTask<Void, Void, Boolean> {
             streamWriter.write("chmod 644 /system/priv-app/com.matejdro.taskertethercontrol.apk\n");
             streamWriter.flush();
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                createOreoPermissionWhitelist(context, streamWriter);
+            }
+
             //Mount system back to RO
             streamWriter.write("mount -o ro,remount /system\n");
             streamWriter.flush();
@@ -87,6 +96,32 @@ class SystemInstallTask extends AsyncTask<Void, Void, Boolean> {
                 suProcess.destroy();
             }
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.O)
+    private void createOreoPermissionWhitelist(Context context, OutputStreamWriter streamWriter) throws Exception {
+        InputStream permissionFileInput
+                = context.getResources().openRawResource(R.raw.oreo_permission_definition);
+
+        File tmpFile = new File(context.getCacheDir(), "permissions.xml");
+        OutputStream targetFileStream = new FileOutputStream(tmpFile);
+
+        StreamUtils.copyData(permissionFileInput, targetFileStream);
+        permissionFileInput.close();
+        targetFileStream.close();
+
+        String systemTargetPath = "/system/etc/permissions/privapp-permissions-com.matejdro.taskertethercontrol.xml";
+
+        //Copy over permissions XML
+        streamWriter.write("cat " + tmpFile.getAbsolutePath() + " > " + systemTargetPath + "\n");
+        streamWriter.flush();
+
+        //Update file permissions
+        streamWriter.write("chmod 644 " + systemTargetPath + "\n");
+        streamWriter.flush();
+
+        //noinspection ResultOfMethodCallIgnored
+        tmpFile.deleteOnExit();
     }
 
     @Override

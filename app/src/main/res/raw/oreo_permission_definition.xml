@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<permissions>
+  <privapp-permissions package="com.matejdro.taskertethercontrol">
+    <permission name="android.permission.TETHER_PRIVILEGED"/>
+    <permission name="android.permission.MANAGE_USERS"/>
+  </privapp-permissions>
+</permissions>
